@@ -5,8 +5,8 @@ import random
 from bs4 import BeautifulSoup
 
 # ===== Read from environment (set in GitHub Actions) =====
-BASE_URL = os.environ.get("BASE_URL", "https://example.com/search")
-BIRTH_DATE = os.environ.get("BIRTH_DATE", "1990-01-01")
+BASE_URL = os.environ.get("BASE_URL", "https://bceceboard.bihar.gov.in/web_RankCard/BLE2026_RANK/BLE_Rank.php")
+BIRTH_DATE = os.environ.get("BIRTH_DATE", "03-06-2006")
 START_NUMBER = int(os.environ.get("START_NUMBER", "11000000"))
 END_NUMBER = int(os.environ.get("END_NUMBER", "11009999"))
 SUCCESS_INDICATOR = os.environ.get("SUCCESS_INDICATOR", "Record found")
