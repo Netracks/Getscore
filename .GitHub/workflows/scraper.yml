@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       birth_date:
-        description: 'Birth date (YYYY-MM-DD)'
+        description: 'Birth date (DD-MMYYYY)'
         required: true
         default: '1990-01-01'
       start_number:
