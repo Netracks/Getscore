@@ -77,28 +77,36 @@ def check_match(response_text):
     if not response_text:
         return False
 
-    # 1. If any failure indicator is present, it's NOT a match
+    # 1. Explicitly check for the known failure message
+    failure_phrases = [
+        "does not Exist",
+        "Sorry",
+        "not Qualified",
+        "No record found",
+        "Invalid"
+    ]
     lower_text = response_text.lower()
-    for fail in FAILURE_INDICATORS:
-        if fail.lower() in lower_text:
+    for phrase in failure_phrases:
+        if phrase.lower() in lower_text:
             if DEBUG:
-                print(f"🚫 Failure indicator '{fail}' found – not a match.")
+                print(f"🚫 Failure phrase '{phrase}' found – not a match.")
             return False
 
-    # 2. Look for success indicators – if any are present, it's a match
-    for success in SUCCESS_INDICATORS:
-        if success.lower() in lower_text:
+    # 2. Now look for success indicators – these should appear only on a valid rank card
+    success_phrases = [
+        "Rank",
+        "Candidate Name",
+        "Father",
+        "Mother",
+        "Roll No"
+    ]
+    for phrase in success_phrases:
+        if phrase.lower() in lower_text:
             if DEBUG:
-                print(f"✅ Success indicator '{success}' found – match!")
+                print(f"✅ Success phrase '{phrase}' found – match!")
             return True
 
-    # 3. Additional heuristic: if the response contains a table with data,
-    #    but we don't have a specific indicator, assume it's a match if it's longer than 200 chars.
-    if len(response_text.strip()) > 200 and ("table" in lower_text or "tr" in lower_text):
-        if DEBUG:
-            print("⚠️ No explicit indicator, but response looks like a table – assuming match.")
-        return True
-
+    # 3. If we reach here, no clear success indicators found
     if DEBUG:
         print("❌ No success indicators found – assuming no match.")
     return False
