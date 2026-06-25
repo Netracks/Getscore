@@ -23,7 +23,7 @@ from bs4 import BeautifulSoup
 
 # The URL of the page that contains the form (not necessarily the action)
 # If the form submits to the same URL, just set this to the page URL.
-BASE_URL = "https://example.com/search"   # <-- CHANGE ME
+BASE_URL = "https://bceceboard.bihar.gov.in/web_RankCard/BLE2026_RANK/BLE_Rank.php"   # <-- CHANGE ME
 
 # Form field names – inspect the HTML to get these.
 FIELD_NUMBER = "number"           # name of the input for the 8-digit number
@@ -135,9 +135,9 @@ def try_number(number, csrf_token=None):
     return number, found, resp.text
 
 def worker(numbers, csrf_token, progress_counter, progress_lock):
-    """
-    Worker thread: process a chunk of numbers.
-    """
+    """Worker thread: process a chunk of numbers."""
+    global found_number   # <-- FIX: declare global at the top of the function
+
     local_session = requests.Session()
     # Reuse CSRF token (it might be valid for a while)
     for num in numbers:
@@ -150,7 +150,6 @@ def worker(numbers, csrf_token, progress_counter, progress_lock):
             number, found, response = try_number(num, csrf_token)
             if found:
                 with found_lock:
-                    global found_number
                     if found_number is None:
                         found_number = number
                         # Save result
@@ -169,7 +168,8 @@ def worker(numbers, csrf_token, progress_counter, progress_lock):
 
         except requests.exceptions.RequestException as e:
             print(f"\n⚠️ Network error on {num:08d}: {e}")
-            # Wait a bit longer on error, then retry? We'll just continue.
+            # Wait a bit longer on error, then continue
+            time.sleep(DELAY_PER_REQUEST * 2)
         except Exception as e:
             print(f"\n⚠️ Unexpected error on {num:08d}: {e}")
 
@@ -214,7 +214,6 @@ def main():
             return 0
         else:
             print("\n❌ No match found in the given range.")
-            # If debug is on, suggest checking the debug files
             if DEBUG:
                 print("💡 Debug HTML files saved as debug_*.html – inspect them.")
             return 1
