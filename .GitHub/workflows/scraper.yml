@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       birth_date:
-        description: 'Birth date (DD-MMYYYY)'
+        description: 'Birth date (DD-MM-YYYY)'
         required: true
         default: '1990-01-01'
       start_number:
@@ -42,7 +42,7 @@ jobs:
 
       - name: Run scraper
         env:
-          BASE_URL: ${{ secrets.BASE_URL }}   # store in repo secrets
+          BASE_URL: ${{ https://bceceboard.bihar.gov.in/web_RankCard/BLE2026_RANK/BLE_Rank.php }}   # store in repo secrets
           BIRTH_DATE: ${{ github.event.inputs.birth_date }}
           START_NUMBER: ${{ github.event.inputs.start_number }}
           END_NUMBER: ${{ github.event.inputs.end_number }}
